@@ -1,14 +1,11 @@
 syntax = "proto3";
-//import "protobuf/ptypes/struct/struct.proto " ;
-//import "google/protobuf/any.proto";
-//import "google/protobuf/descriptor.proto";
 import "github.com/infobloxopen/protoc-gen-gorm/options/gorm.proto";
 
 package fsm ;
 
 message Transition {
 	enum Code {
-		// Retry when raised or returned causes a FSM step to re-enter on next pass
+		// Retry when raised or returned causes an FSM step to re-enter on next pass
 		Retry = 0;
 
 		// Abort when raised or returned from a step causes the FSM to move to the
@@ -32,11 +29,15 @@ message Transition {
 	string nextStep = 2;
 }
 
-// Context is the immutable environment when a FSM starts
+// Context is the immutable environment when an FSM starts
 message Context {
+	option (gorm.opts) = {
+		ormable: true,
+	};
+
 	string Class = 1;
-        //map<string, any> Parameters = 2;
-        map<string, string> Parameters = 2;
+	//map<string, any> Parameters = 2;
+	map<string, string> Parameters = 2;
 
 	Transition.Code state = 3;
 
@@ -49,8 +50,8 @@ message Context {
 // Mutable is the current writeable state of an FSM instance
 message Mutable {
 	// Step indicates which stage, state, or step is executed next
-        string Step = 1;
+	string Step = 1;
 	// Variables is a key/value map of state entities (interface{} <-- Any currently not working)
-        map<string, string> Variables = 2;
+	map<string, string> Variables = 2;
 }
 
